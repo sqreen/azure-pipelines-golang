@@ -9,6 +9,6 @@ RUN apk add --no-cache --virtual .pipeline-deps readline linux-pam \
 LABEL "com.azure.dev.pipelines.agent.handler.node.path"="/usr/local/bin/node"
 
 # Go, git and gcc (alread a go dependency) + libc6-compat to have the libc6.so symlink to muslc
-RUN apk add 'go~1.12' libc6-compat
+RUN apk add 'go~1.12' git libc6-compat
 
 CMD [ "node" ]
