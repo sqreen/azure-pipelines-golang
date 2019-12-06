@@ -1,5 +1,14 @@
-FROM golang:1.13-alpine
-# cf. https://docs.microsoft.com/en-us/azure/devops/pipelines/process/container-phases?view=azure-devops&tabs=yaml#requirements
-RUN apk update && apk add bash nodejs-current libc6-compat gcompat libstdc++ libgcc shadow sudo
-RUN sed -i 's/^CREATE_MAIL_SPOOL=yes/CREATE_MAIL_SPOOL=no/' /etc/default/useradd
-RUN useradd -u 1001 -m buggy
+# Following doc https://github.com/microsoft/azure-pipelines-agent/blob/master/docs/design/non-glibc-containers.md
+
+FROM node:10-alpine
+
+RUN apk add --no-cache --virtual .pipeline-deps readline linux-pam \
+  && apk add bash sudo shadow \
+  && apk del .pipeline-deps
+
+LABEL "com.azure.dev.pipelines.agent.handler.node.path"="/usr/local/bin/node"
+
+# Go and gcc (go dependency) + libc6-compat to have the libc6.so symlink to muslc
+RUN apk -U --repository=http://dl-cdn.alpinelinux.org/alpine/edge/community add 'go~1.13' libc6-compat
+
+CMD [ "node" ]
