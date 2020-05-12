@@ -9,6 +9,6 @@ LABEL "com.azure.dev.pipelines.agent.handler.node.path"="/usr/local/bin/node"
 
 # Go, git, musl-dev (libc headers), gcc and libc6-compat to have the libc6.so
 # symlink to muslc
-RUN apk add 'go~1.12' git gcc musl-dev libc6-compat
+RUN apk add 'go~1.12' make git gcc musl-dev libc6-compat
 
 CMD [ "node" ]
