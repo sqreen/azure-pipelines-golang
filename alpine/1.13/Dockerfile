@@ -7,9 +7,14 @@ RUN apk add --no-cache --virtual .pipeline-deps readline linux-pam \
 
 LABEL "com.azure.dev.pipelines.agent.handler.node.path"="/usr/local/bin/node"
 
-# Go, git, musl-dev (libc headers), gcc and libc6-compat to have the libc6.so
-# symlink to muslc
 RUN apk -U --repository=http://dl-cdn.alpinelinux.org/alpine/edge/community \
-  add 'go~1.13' make git gcc musl-dev libc6-compat
+  add make git gcc musl-dev libc6-compat
+
+RUN set -eux; \
+    wget -O go.tgz https://dl.google.com/go/go1.13.linux-amd64.tar.gz; \
+    tar -C /usr/local -xzf go.tgz; \
+    rm go.tgz
+
+ENV PATH="${PATH}:/usr/local/go/bin"
 
 CMD [ "node" ]
